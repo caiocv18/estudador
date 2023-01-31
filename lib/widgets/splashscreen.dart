@@ -4,6 +4,7 @@ import 'package:splashscreen/splashscreen.dart';
 import 'home.dart';
 
 class SplashScreenPage extends StatefulWidget {
+
   @override
   _SplashScreenPageState createState() => _SplashScreenPageState();
 }
@@ -16,13 +17,13 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
         SplashScreen(
           seconds: 5,
           backgroundColor: Colors.white,
-          navigateAfterSeconds: HomePage(title: 'Estudador'),
+          navigateAfterSeconds: const HomePage(title: 'Estudador'),
           loaderColor: Colors.transparent,
         ),
         Align(
           alignment: FractionalOffset.center,
           child: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage("assets/icon.png"),
                 fit: BoxFit.scaleDown,
