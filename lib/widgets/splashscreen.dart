@@ -1,10 +1,9 @@
+import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:splashscreen/splashscreen.dart';
 
 import 'home.dart';
 
 class SplashScreenPage extends StatefulWidget {
-
   @override
   _SplashScreenPageState createState() => _SplashScreenPageState();
 }
@@ -14,12 +13,11 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        SplashScreen(
-          seconds: 5,
-          backgroundColor: Colors.white,
-          navigateAfterSeconds: const HomePage(title: 'Estudador'),
-          loaderColor: Colors.transparent,
-        ),
+        AnimatedSplashScreen(
+            duration: 5000,
+            splash: Icons.home,
+            nextScreen: HomePage(title: "Estudador"),
+            backgroundColor: Colors.blue),
         Align(
           alignment: FractionalOffset.center,
           child: Container(
