@@ -10,8 +10,8 @@ class App extends StatelessWidget {
       title: 'Estudador',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+          primarySwatch: Colors.cyan,
+          visualDensity: VisualDensity.adaptivePlatformDensity),
       home: SplashScreenPage(),
     );
   }

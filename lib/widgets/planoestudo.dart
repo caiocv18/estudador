@@ -10,6 +10,7 @@ class PlanoEstudoPage extends StatefulWidget {
 class _PlanoEstudoPageState extends State<PlanoEstudoPage> {
   var descricaoCtrl = TextEditingController();
   var qtdHorasCtrl = TextEditingController();
+  var currentIndex = null;
 
   _save() {}
 
@@ -68,9 +69,18 @@ class _PlanoEstudoPageState extends State<PlanoEstudoPage> {
                           InputDecoration(labelText: "Quantidade de horas"),
                       style: TextStyle(fontSize: 20),
                     )),
-                Expanded(
-                    child: IconButton(
-                        onPressed: _addAoPlano, icon: Icon(Icons.add)))
+                Visibility(
+                    visible: currentIndex == null,
+                    child: Expanded(
+                      child: IconButton(
+                          onPressed: _addAoPlano, icon: Icon(Icons.add)),
+                    )),
+                Visibility(
+                    visible: currentIndex != null,
+                    child: Expanded(
+                      child: IconButton(
+                          onPressed: _alterarDoPlano, icon: Icon(Icons.edit)),
+                    )),
               ],
             ),
           ),
@@ -78,22 +88,32 @@ class _PlanoEstudoPageState extends State<PlanoEstudoPage> {
             margin: EdgeInsets.only(bottom: 8),
             child: Column(
               children: _planoEstudo.niveis.map((e) {
-                return Card(
-                  child: Container(
-                    padding: EdgeInsets.all(16),
-                    child: Row(
-                      children: [
-                        Expanded(
-                            child: Text(
-                          e.descricao,
-                          style: TextStyle(fontSize: 18),
-                        )),
-                        Expanded(
-                            child: Text(
-                          '${e.qtdHoras} horas',
-                          style: TextStyle(fontSize: 18),
-                        ))
-                      ],
+                return GestureDetector(
+                  onTap: () => _editarDoPlano(e),
+                  child: Card(
+                    child: Container(
+                      padding: EdgeInsets.all(16),
+                      child: Row(
+                        children: [
+                          Expanded(
+                              flex: 3,
+                              child: Text(
+                                e.descricao,
+                                style: TextStyle(fontSize: 18),
+                              )),
+                          Expanded(
+                              flex: 2,
+                              child: Text(
+                                '${e.qtdHoras} horas',
+                                style: TextStyle(fontSize: 18),
+                              )),
+                          Expanded(
+                              child: IconButton(
+                                  onPressed: () => _removeDoPlano(
+                                      _planoEstudo.niveis.indexOf(e)),
+                                  icon: Icon(Icons.delete)))
+                        ],
+                      ),
                     ),
                   ),
                 );
@@ -102,15 +122,19 @@ class _PlanoEstudoPageState extends State<PlanoEstudoPage> {
           )
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _save(),
-        child: Icon(Icons.check),
+      floatingActionButton: Visibility(
+        visible: _planoEstudo.titulo.trim().isEmpty &&
+            _planoEstudo.niveis.isNotEmpty,
+        child: FloatingActionButton(
+          onPressed: () => _save(),
+          child: Icon(Icons.check),
+        ),
       ),
     );
   }
 
   _addAoPlano() {
-    if (descricaoCtrl.text.trim().isEmpty || qtdHorasCtrl.text.trim().isEmpty) {
+    if (_validarNivel()) {
       return;
     }
     setState(() {
@@ -123,5 +147,42 @@ class _PlanoEstudoPageState extends State<PlanoEstudoPage> {
       qtdHorasCtrl.clear();
     });
     print(_planoEstudo);
+  }
+
+  _removeDoPlano(int index) {
+    setState(() {
+      _planoEstudo.niveis.removeAt(index);
+      print(_planoEstudo);
+    });
+  }
+
+  _editarDoPlano(NivelModel e) {
+    setState(() {
+      currentIndex = _planoEstudo.niveis.indexOf(e);
+      descricaoCtrl.text = e.descricao;
+      qtdHorasCtrl.text = e.qtdHoras.toString();
+      print(_planoEstudo);
+    });
+  }
+
+  _alterarDoPlano() {
+    if (_validarNivel()) {
+      return;
+    }
+    setState(() {
+      var nivel = _planoEstudo.niveis[currentIndex];
+      nivel.descricao = descricaoCtrl.text;
+      nivel.qtdHoras = int.parse(qtdHorasCtrl.text);
+
+      descricaoCtrl.clear();
+      qtdHorasCtrl.clear();
+      currentIndex = null;
+    });
+    print(_planoEstudo);
+  }
+
+  bool _validarNivel() {
+    return descricaoCtrl.text.trim().isEmpty ||
+        qtdHorasCtrl.text.trim().isEmpty;
   }
 }
