@@ -14,10 +14,12 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
     return Stack(
       children: <Widget>[
         AnimatedSplashScreen(
-            duration: 5000,
-            splash: Icons.home,
-            nextScreen: HomePage(title: "Estudador"),
-            backgroundColor: Colors.blue),
+          duration: 5000,
+          splash: Icons.home,
+          nextScreen: HomePage(title: "Estudador"),
+          backgroundColor: Colors.cyan,
+          splashIconSize: 0,
+        ),
         Align(
           alignment: FractionalOffset.center,
           child: Container(

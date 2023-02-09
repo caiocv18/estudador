@@ -8,6 +8,9 @@ class PlanoEstudoPage extends StatefulWidget {
 }
 
 class _PlanoEstudoPageState extends State<PlanoEstudoPage> {
+  var descricaoCtrl = TextEditingController();
+  var qtdHorasCtrl = TextEditingController();
+
   _save() {}
 
   PlanoEstudoModel _planoEstudo = PlanoEstudoModel();
@@ -46,16 +49,11 @@ class _PlanoEstudoPageState extends State<PlanoEstudoPage> {
           Container(
             padding: EdgeInsets.only(bottom: 8),
             child: TextFormField(
-              keyboardType: TextInputType.text,
-              textCapitalization: TextCapitalization.words,
-              decoration: InputDecoration(labelText: "Descrição do nível"),
-              style: TextStyle(fontSize: 20),
-              onChanged: (value) {
-                setState(() {
-                  _nivel.descricao = value;
-                });
-              },
-            ),
+                controller: descricaoCtrl,
+                keyboardType: TextInputType.text,
+                textCapitalization: TextCapitalization.words,
+                decoration: InputDecoration(labelText: "Descrição do nível"),
+                style: TextStyle(fontSize: 20)),
           ),
           Container(
             margin: EdgeInsets.only(bottom: 8),
@@ -64,19 +62,42 @@ class _PlanoEstudoPageState extends State<PlanoEstudoPage> {
                 Expanded(
                     flex: 2,
                     child: TextFormField(
+                      controller: qtdHorasCtrl,
                       keyboardType: TextInputType.number,
                       decoration:
                           InputDecoration(labelText: "Quantidade de horas"),
                       style: TextStyle(fontSize: 20),
-                      onChanged: (value) {
-                        setState(() {
-                          _nivel.qtdHoras = int.parse(value);
-                        });
-                      },
                     )),
                 Expanded(
-                    child: IconButton(onPressed: () {}, icon: Icon(Icons.add)))
+                    child: IconButton(
+                        onPressed: _addAoPlano, icon: Icon(Icons.add)))
               ],
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(bottom: 8),
+            child: Column(
+              children: _planoEstudo.niveis.map((e) {
+                return Card(
+                  child: Container(
+                    padding: EdgeInsets.all(16),
+                    child: Row(
+                      children: [
+                        Expanded(
+                            child: Text(
+                          e.descricao,
+                          style: TextStyle(fontSize: 18),
+                        )),
+                        Expanded(
+                            child: Text(
+                          '${e.qtdHoras} horas',
+                          style: TextStyle(fontSize: 18),
+                        ))
+                      ],
+                    ),
+                  ),
+                );
+              }).toList(),
             ),
           )
         ],
@@ -86,5 +107,21 @@ class _PlanoEstudoPageState extends State<PlanoEstudoPage> {
         child: Icon(Icons.check),
       ),
     );
+  }
+
+  _addAoPlano() {
+    if (descricaoCtrl.text.trim().isEmpty || qtdHorasCtrl.text.trim().isEmpty) {
+      return;
+    }
+    setState(() {
+      _planoEstudo.niveis.add(
+        NivelModel(
+            descricao: descricaoCtrl.text,
+            qtdHoras: int.parse(qtdHorasCtrl.text)),
+      );
+      descricaoCtrl.clear();
+      qtdHorasCtrl.clear();
+    });
+    print(_planoEstudo);
   }
 }

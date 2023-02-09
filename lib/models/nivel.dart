@@ -1,8 +1,10 @@
 import 'model.dart';
 
 class NivelModel extends Model<NivelModel> {
-  String descricao = '';
-  int qtdHoras = 0;
+  String descricao;
+  int qtdHoras;
+
+  NivelModel({this.descricao = '', this.qtdHoras = 0});
 
   @override
   NivelModel fromJson(Map<String, dynamic> json) {
