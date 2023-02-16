@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:plano_de_estudos/models/nivel.dart';
 import 'package:plano_de_estudos/models/planoestudo.dart';
+import 'package:plano_de_estudos/services/planoestudo.dart';
 
 class PlanoEstudoPage extends StatefulWidget {
   @override
@@ -8,14 +9,20 @@ class PlanoEstudoPage extends StatefulWidget {
 }
 
 class _PlanoEstudoPageState extends State<PlanoEstudoPage> {
+  PlanoEstudoModel _planoEstudo = PlanoEstudoModel();
+  PlanoEstudoService _planoEstudoService = PlanoEstudoService();
+
   var descricaoCtrl = TextEditingController();
   var qtdHorasCtrl = TextEditingController();
+
   var currentIndex = null;
 
-  _save() {}
-
-  PlanoEstudoModel _planoEstudo = PlanoEstudoModel();
-  NivelModel _nivel = NivelModel();
+  _save() async {
+    _planoEstudo.niveis.sort((n1, n2) => n1.qtdHoras - n2.qtdHoras);
+    _planoEstudo.nivelAtual = _planoEstudo.niveis.first;
+    await _planoEstudoService.save(_planoEstudo);
+    Navigator.pop(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -123,8 +130,7 @@ class _PlanoEstudoPageState extends State<PlanoEstudoPage> {
         ],
       ),
       floatingActionButton: Visibility(
-        visible: _planoEstudo.titulo.trim().isEmpty &&
-            _planoEstudo.niveis.isNotEmpty,
+        visible: _planoEstudo.niveis.isNotEmpty,
         child: FloatingActionButton(
           onPressed: () => _save(),
           child: Icon(Icons.check),
