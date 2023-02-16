@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:plano_de_estudos/models/planoestudo.dart';
 import 'package:plano_de_estudos/services/planoestudo.dart';
+import 'package:plano_de_estudos/utils/string.dart';
 import 'package:plano_de_estudos/widgets/planoestudo.dart';
+import 'package:plano_de_estudos/widgets/timer.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key, required this.title}) : super(key: key);
@@ -15,14 +17,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   PlanoEstudoService _planoEstudoService = PlanoEstudoService();
   List<PlanoEstudoModel> _planos = [];
-
-  _printDuration([seconds = 0]) {
-    var duration = Duration(milliseconds: seconds * 1000);
-    String twoDigits(int n) => n.toString().padLeft(2, "0");
-    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
-    String twoDigitSeconds = twoDigits(duration.inMinutes.remainder(60));
-    return "${twoDigits(duration.inHours)}:${twoDigitMinutes}:${twoDigitSeconds}";
-  }
 
   @override
   void initState() {
@@ -69,7 +63,13 @@ class _HomePageState extends State<HomePage> {
     return _planos.map((p) {
       return GestureDetector(
         onTap: () async {
-          //TODO abrir tela para cronometrar estudo
+          await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => TimerPage(_planos.indexOf(p), p),
+            ),
+          );
+          _updateList();
         },
         child: Card(
           child: Container(
@@ -86,7 +86,7 @@ class _HomePageState extends State<HomePage> {
                 Expanded(
                   flex: 2,
                   child: Text(
-                    '${_printDuration(p.tempoEstudado)} estudado',
+                    '${StringUtils.printDuration(p.tempoEstudado)} estudado',
                     style: TextStyle(fontSize: 18),
                   ),
                 ),
